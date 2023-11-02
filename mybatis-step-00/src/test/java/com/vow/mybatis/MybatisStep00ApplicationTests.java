@@ -1,13 +1,13 @@
-package com.vow;
+package com.vow.mybatis;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MybatisDemoApplicationTests {
+class MybatisStep00ApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
