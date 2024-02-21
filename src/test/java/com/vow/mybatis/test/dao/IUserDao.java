@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IUserDao {
 
-    String queryUserInfoById(String id);
+    User queryUserInfoById(Long id);
 }

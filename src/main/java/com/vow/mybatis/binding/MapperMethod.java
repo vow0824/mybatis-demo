@@ -3,6 +3,7 @@ package com.vow.mybatis.binding;
 import com.vow.mybatis.mapping.MappedStatement;
 import com.vow.mybatis.mapping.SqlCommandType;
 import com.vow.mybatis.session.Configuration;
+import com.vow.mybatis.session.SqlSession;
 
 import java.lang.reflect.Method;
 
@@ -17,6 +18,24 @@ public class MapperMethod {
 
     public MapperMethod(Class<?> mapperInterface, Method method, Configuration configuration) {
         this.command = new SqlCommand(configuration, mapperInterface, method);
+    }
+
+    public Object execute(SqlSession sqlSession, Object[] args) {
+        Object result = null;
+        switch (command.getType()) {
+            case INSERT:
+                break;
+            case DELETE:
+                break;
+            case UPDATE:
+                break;
+            case SELECT:
+                result = sqlSession.selectOne(command.getName(), args);
+                break;
+            default:
+                throw new RuntimeException("Unknown execution method for: " + command.getName());
+        }
+        return result;
     }
 
     public static class SqlCommand {
