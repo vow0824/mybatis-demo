@@ -2,8 +2,18 @@ package com.vow.mybatis.session;
 
 import com.vow.mybatis.binding.MapperRegistry;
 import com.vow.mybatis.datasource.druid.DruidDataSourceFactory;
+import com.vow.mybatis.datasource.pooled.PooledDataSourceFactory;
+import com.vow.mybatis.datasource.unpooled.UnpooledDataSourceFactory;
+import com.vow.mybatis.executor.Executor;
+import com.vow.mybatis.executor.SimpleExecutor;
+import com.vow.mybatis.executor.resultset.DefaultResultSetHandler;
+import com.vow.mybatis.executor.resultset.ResultSetHandler;
+import com.vow.mybatis.executor.statement.PreparedStatementHandler;
+import com.vow.mybatis.executor.statement.StatementHandler;
+import com.vow.mybatis.mapping.BoundSql;
 import com.vow.mybatis.mapping.Environment;
 import com.vow.mybatis.mapping.MappedStatement;
+import com.vow.mybatis.transaction.Transaction;
 import com.vow.mybatis.transaction.jdbc.JdbcTransactionFactory;
 import com.vow.mybatis.type.TypeAliasRegistry;
 
@@ -28,6 +38,8 @@ public class Configuration {
     public Configuration(){
         typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
         typeAliasRegistry.registerAlias("DRUID", DruidDataSourceFactory.class);
+        typeAliasRegistry.registerAlias("UNPOOLED", UnpooledDataSourceFactory.class);
+        typeAliasRegistry.registerAlias("POOLED", PooledDataSourceFactory.class);
     }
 
     public void addMappers(String packageName){
@@ -68,5 +80,26 @@ public class Configuration {
 
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    /**
+     * 创建结果集处理器
+     */
+    public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, BoundSql boundSql) {
+        return new DefaultResultSetHandler(executor, mappedStatement, boundSql);
+    }
+
+    /**
+     * 生产执行器
+     */
+    public Executor newExecutor(Transaction transaction) {
+        return new SimpleExecutor(this, transaction);
+    }
+
+    /**
+     * 创建语句处理器
+     */
+    public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, ResultHandler resultHandler, BoundSql boundSql) {
+        return new PreparedStatementHandler(executor, mappedStatement, parameter, resultHandler, boundSql);
     }
 }

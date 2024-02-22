@@ -1,12 +1,8 @@
-package com.vow.mybatis.session.defaults;
+package com.vow.mybatis.executor.resultset;
 
-import com.vow.mybatis.binding.MapperRegistry;
 import com.vow.mybatis.executor.Executor;
 import com.vow.mybatis.mapping.BoundSql;
-import com.vow.mybatis.mapping.Environment;
 import com.vow.mybatis.mapping.MappedStatement;
-import com.vow.mybatis.session.Configuration;
-import com.vow.mybatis.session.SqlSession;
 
 import java.lang.reflect.Method;
 import java.sql.*;
@@ -16,31 +12,26 @@ import java.util.List;
 
 /**
  * @author: vow
- * @date: 2024/2/1 14:45
+ * @date: 2024/2/22 11:09
  * @description:
  */
-public class DefaultSqlSession implements SqlSession {
+public class DefaultResultSetHandler implements ResultSetHandler {
 
+    private final BoundSql boundSql;
 
-    private Configuration configuration;
-
-    private Executor executor;
-
-    public DefaultSqlSession(Configuration configuration, Executor executor) {
-        this.configuration = configuration;
-        this.executor = executor;
+    public DefaultResultSetHandler(Executor executor, MappedStatement mappedStatement, BoundSql boundSql) {
+        this.boundSql = boundSql;
     }
 
     @Override
-    public <T> T selectOne(String statement) {
-        return this.selectOne(statement, null);
-    }
-
-    @Override
-    public <T> T selectOne(String statement, Object parameter) {
-        MappedStatement ms = configuration.getMappedStatement(statement);
-        List<T> list = executor.query(ms, parameter, Executor.NO_RESULT_HANDLER, ms.getBoundSql());
-        return list.get(0);
+    public <E> List<E> handleResultSets(Statement stmt) throws SQLException {
+        ResultSet resultSet = stmt.getResultSet();
+        try {
+            return resultSet2Obj(resultSet, Class.forName(boundSql.getResultType()));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private <T> List<T> resultSet2Obj(ResultSet resultSet, Class<?> clazz) {
@@ -69,15 +60,5 @@ public class DefaultSqlSession implements SqlSession {
             e.printStackTrace();
         }
         return list;
-    }
-
-    @Override
-    public <T> T getMapper(Class<T> type) {
-        return configuration.getMapper(type, this);
-    }
-
-    @Override
-    public Configuration getConfiguration() {
-        return configuration;
     }
 }
