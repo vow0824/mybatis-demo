@@ -3,6 +3,7 @@ package com.vow.mybatis.test;
 import com.alibaba.fastjson.JSON;
 import com.vow.mybatis.binding.MapperRegistry;
 import com.vow.mybatis.builder.xml.XMLConfigBuilder;
+import com.vow.mybatis.datasource.pooled.PooledDataSource;
 import com.vow.mybatis.io.Resources;
 import com.vow.mybatis.session.Configuration;
 import com.vow.mybatis.session.SqlSession;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * @author: vow
@@ -42,25 +45,26 @@ public class ApiTest {
         IUserDao userDao = sqlSession.getMapper(IUserDao.class);
 
         // 3. 测试验证
-        User user = userDao.queryUserInfoById(1L);
-        System.out.println(JSON.toJSONString(user));
-//        logger.info("测试结果：{}", JSON.toJSONString(user));
+        for (int i = 0; i < 50; i++) {
+            User user = userDao.queryUserInfoById(1L);
+            logger.info("测试结果：{}", JSON.toJSONString(user));
+        }
     }
 
     @Test
-    public void test_selectOne() throws IOException {
-        // 解析 XML
-        Reader reader = Resources.getResourceAsReader("mybatis-config-datasource.xml");
-        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder(reader);
-        Configuration configuration = xmlConfigBuilder.parse();
-
-        // 获取 DefaultSqlSession
-        SqlSession sqlSession = new DefaultSqlSession(configuration);
-
-        // 执行查询：默认是一个集合参数
-        Object[] req = {1L};
-        Object res = sqlSession.selectOne("com.vow.mybatis.test.dao.IUserDao.queryUserInfoById", req);
-        System.out.println(JSON.toJSONString(res));
-//        logger.info("测试结果：{}", JSON.toJSONString(res));
+    public void test_pooled() throws SQLException, InterruptedException {
+        PooledDataSource pooledDataSource = new PooledDataSource();
+        pooledDataSource.setDriver("com.mysql.cj.jdbc.Driver");
+        pooledDataSource.setUrl("jdbc:mysql://127.0.0.1:3306/mybatis?useUnicode=true&characterEncoding=utf8");
+        pooledDataSource.setUsername("root");
+        pooledDataSource.setPassword("123123");
+        // 持续获得链接
+        while (true) {
+            Connection connection = pooledDataSource.getConnection();
+            System.out.println(connection);
+            Thread.sleep(1000);
+            // 注释掉/不注释掉测试
+            connection.close();
+        }
     }
 }
