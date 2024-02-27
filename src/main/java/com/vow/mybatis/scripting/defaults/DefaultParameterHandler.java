@@ -52,7 +52,8 @@ public class DefaultParameterHandler implements ParameterHandler {
         if (null != parameterMappings) {
             for (int i = 0; i < parameterMappings.size(); i++) {
                 ParameterMapping parameterMapping = parameterMappings.get(i);
-                String propertyName = parameterMapping.getProperty();Object value;
+                String propertyName = parameterMapping.getProperty();
+                Object value;
                 if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
                     value = parameterObject;
                 } else {

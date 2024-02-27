@@ -7,6 +7,7 @@ import com.vow.mybatis.mapping.BoundSql;
 import com.vow.mybatis.mapping.Environment;
 import com.vow.mybatis.mapping.MappedStatement;
 import com.vow.mybatis.session.Configuration;
+import com.vow.mybatis.session.RowBounds;
 import com.vow.mybatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class DefaultSqlSession implements SqlSession {
     public <T> T selectOne(String statement, Object parameter) {
         logger.info("执行查询 statement：{} parameter：{}", statement, JSON.toJSONString(parameter));
         MappedStatement ms = configuration.getMappedStatement(statement);
-        List<T> list = executor.query(ms, parameter, Executor.NO_RESULT_HANDLER, ms.getSqlSource().getBoundSql(parameter));
+        List<T> list = executor.query(ms, parameter, RowBounds.DEFAULT, Executor.NO_RESULT_HANDLER, ms.getSqlSource().getBoundSql(parameter));
         return list.get(0);
     }
 

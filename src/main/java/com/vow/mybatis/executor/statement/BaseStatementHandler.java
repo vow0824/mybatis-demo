@@ -1,11 +1,13 @@
 package com.vow.mybatis.executor.statement;
 
 import com.vow.mybatis.executor.Executor;
+import com.vow.mybatis.executor.parameter.ParameterHandler;
 import com.vow.mybatis.executor.resultset.ResultSetHandler;
 import com.vow.mybatis.mapping.BoundSql;
 import com.vow.mybatis.mapping.MappedStatement;
 import com.vow.mybatis.session.Configuration;
 import com.vow.mybatis.session.ResultHandler;
+import com.vow.mybatis.session.RowBounds;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,16 +30,22 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
     protected final ResultSetHandler resultSetHandler;
 
+    protected final ParameterHandler parameterHandler;
+
+    protected final RowBounds rowBounds;
+
     protected BoundSql boundSql;
 
-    public BaseStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, ResultHandler resultHandler, BoundSql boundSql) {
+    public BaseStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         this.configuration = mappedStatement.getConfiguration();
         this.executor = executor;
         this.mappedStatement = mappedStatement;
+        this.rowBounds = rowBounds;
         this.boundSql = boundSql;
 
         this.parameterObject = parameterObject;
-        this.resultSetHandler = configuration.newResultSetHandler(executor, mappedStatement, boundSql);
+        this.parameterHandler = configuration.newParameterHandler(mappedStatement, parameterObject, boundSql);
+        this.resultSetHandler = configuration.newResultSetHandler(executor, mappedStatement, rowBounds, resultHandler, boundSql);
     }
 
     @Override

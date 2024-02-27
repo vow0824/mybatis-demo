@@ -1,16 +1,10 @@
 package com.vow.mybatis.test;
 
 import com.alibaba.fastjson.JSON;
-import com.vow.mybatis.binding.MapperRegistry;
-import com.vow.mybatis.builder.xml.XMLConfigBuilder;
-import com.vow.mybatis.datasource.pooled.PooledDataSource;
 import com.vow.mybatis.io.Resources;
-import com.vow.mybatis.session.Configuration;
 import com.vow.mybatis.session.SqlSession;
 import com.vow.mybatis.session.SqlSessionFactory;
 import com.vow.mybatis.session.SqlSessionFactoryBuilder;
-import com.vow.mybatis.session.defaults.DefaultSqlSession;
-import com.vow.mybatis.session.defaults.DefaultSqlSessionFactory;
 import com.vow.mybatis.test.dao.IUserDao;
 import com.vow.mybatis.test.po.User;
 import org.junit.Before;
@@ -19,9 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * @author: vow
