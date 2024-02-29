@@ -1,6 +1,7 @@
 package com.vow.mybatis.binding;
 
 import cn.hutool.core.lang.ClassScanner;
+import com.vow.mybatis.builder.annotation.MapperAnnotationBuilder;
 import com.vow.mybatis.session.Configuration;
 import com.vow.mybatis.session.SqlSession;
 
@@ -41,6 +42,10 @@ public class MapperRegistry {
                 throw new RuntimeException("Type " + type + " is already known to the MapperRegistry.");
             }
             knownMappers.put(type, new MapperProxyFactory<T>(type));
+
+            // 解析注解类语句配置
+            MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
+            parser.parse();
         } else {
             throw new RuntimeException("Type " + type + " is not an interface.  Mapper interfaces must be declared as interfaces.");
         }

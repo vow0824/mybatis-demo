@@ -14,6 +14,7 @@ import com.vow.mybatis.executor.statement.StatementHandler;
 import com.vow.mybatis.mapping.BoundSql;
 import com.vow.mybatis.mapping.Environment;
 import com.vow.mybatis.mapping.MappedStatement;
+import com.vow.mybatis.mapping.ResultMap;
 import com.vow.mybatis.reflaction.MetaObject;
 import com.vow.mybatis.reflaction.factory.DefaultObjectFactory;
 import com.vow.mybatis.reflaction.factory.ObjectFactory;
@@ -41,9 +42,15 @@ public class Configuration {
 
     protected Environment environment;
 
+    // 映射注册机
     protected MapperRegistry mapperRegistry = new MapperRegistry(this);
 
+    // 映射的语句，存在Map里
     protected final Map<String, MappedStatement> mappedStatements = new HashMap<>();
+    // 结果映射，存在Map里
+    protected final Map<String, ResultMap> resultMaps = new HashMap<>();
+
+    // 类型别名注册机
 
     protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
 
@@ -168,5 +175,13 @@ public class Configuration {
 
     public ObjectFactory getObjectFactory() {
         return objectFactory;
+    }
+
+    public ResultMap getResultMap(String id) {
+        return resultMaps.get(id);
+    }
+
+    public void addResultMap(ResultMap resultMap) {
+        resultMaps.put(resultMap.getId(), resultMap);
     }
 }

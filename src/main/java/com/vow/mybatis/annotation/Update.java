@@ -1,6 +1,18 @@
-package com.vow.mybatis.annotation;/**
+package com.vow.mybatis.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
  * @author: vow
  * @date: 2024/2/29 11:07
  * @description:
- */public @interface Update {
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Update {
+
+    String[] value();
 }
