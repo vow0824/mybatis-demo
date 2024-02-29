@@ -1,8 +1,10 @@
 package com.vow.mybatis.builder;
 
 import com.vow.mybatis.mapping.*;
+import com.vow.mybatis.reflaction.MetaClass;
 import com.vow.mybatis.scripting.LanguageDriver;
 import com.vow.mybatis.session.Configuration;
+import com.vow.mybatis.type.TypeHandler;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -22,6 +24,37 @@ public class MapperBuilderAssistant extends BaseBuilder {
     public MapperBuilderAssistant(Configuration configuration, String resource) {
         super(configuration);
         this.resource = resource;
+    }
+
+    public ResultMapping buildResultMapping(
+            Class<?> resultType,
+            String property,
+            String column,
+            List<ResultFlag> flags) {
+
+        Class<?> javaTypeClass = resolveResultJavaType(resultType, property, null);
+        TypeHandler<?> typeHandlerInstance = resolveTypeHandler(javaTypeClass, null);
+
+        ResultMapping.Builder builder = new ResultMapping.Builder(configuration, property, column, javaTypeClass);
+        builder.typeHandler(typeHandlerInstance);
+        builder.flags(flags);
+
+        return builder.build();
+
+    }
+
+    private Class<?> resolveResultJavaType(Class<?> resultType, String property, Class<?> javaType) {
+        if (javaType == null && property != null) {
+            try {
+                MetaClass metaResultType = MetaClass.forClass(resultType);
+                javaType = metaResultType.getSetterType(property);
+            } catch (Exception ignore) {
+            }
+        }
+        if (javaType == null) {
+            javaType = Object.class;
+        }
+        return javaType;
     }
 
     public String getCurrentNamespace() {
@@ -108,6 +141,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
     }
 
     public ResultMap addResultMap(String id, Class<?> type, List<ResultMapping> resultMappings) {
+        // 补全ID全路径，如：cn.bugstack.mybatis.test.dao.IActivityDao + activityMap
+        id = applyCurrentNamespace(id, false);
+
         ResultMap.Builder inlineResultMapBuilder = new ResultMap.Builder(
                 configuration,
                 id,

@@ -19,7 +19,8 @@
     <mappers>
 <!--        <mapper resource="mapper/User_Mapper.xml"/>-->
         <!--注解配置-->
-        <mapper class="com.vow.mybatis.test.dao.IUserDao"/>
+        <mapper resource="mapper/Activity_Mapper.xml"/>
+<!--        <mapper class="com.vow.mybatis.test.dao.IUserDao"/>-->
     </mappers>
 
 </configuration>

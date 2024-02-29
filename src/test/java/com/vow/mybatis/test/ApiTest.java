@@ -5,7 +5,9 @@ import com.vow.mybatis.io.Resources;
 import com.vow.mybatis.session.SqlSession;
 import com.vow.mybatis.session.SqlSessionFactory;
 import com.vow.mybatis.session.SqlSessionFactoryBuilder;
+import com.vow.mybatis.test.dao.IActivityDao;
 import com.vow.mybatis.test.dao.IUserDao;
+import com.vow.mybatis.test.po.Activity;
 import com.vow.mybatis.test.po.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,5 +111,14 @@ public class ApiTest {
         // 2. 测试验证：对象参数
         List<User> users = userDao.queryUserInfoList();
         logger.info("测试结果：{}", JSON.toJSONString(users));
+    }
+
+    @Test
+    public void test_queryActivityById() {
+        // 1. 获取映射器对象
+        IActivityDao dao = sqlSession.getMapper(IActivityDao.class);
+        // 2. 测试验证
+        Activity res = dao.queryActivityById(100001L);
+        logger.info("测试结果：{}", JSON.toJSONString(res));
     }
 }
