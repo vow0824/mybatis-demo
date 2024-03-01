@@ -39,6 +39,13 @@ public class Activity {
      */
     private Date updateTime;
 
+    public Activity() {
+    }
+
+    public Activity(Long activityId) {
+        this.activityId = activityId;
+    }
+
     public Long getId() {
         return id;
     }
