@@ -1,6 +1,7 @@
 package com.vow.mybatis.executor.statement;
 
 import com.vow.mybatis.executor.Executor;
+import com.vow.mybatis.executor.keygen.KeyGenerator;
 import com.vow.mybatis.executor.resultset.ResultSetHandler;
 import com.vow.mybatis.mapping.BoundSql;
 import com.vow.mybatis.mapping.MappedStatement;
@@ -39,7 +40,11 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     public int update(Statement statement) throws SQLException {
         PreparedStatement ps = (PreparedStatement) statement;
         ps.execute();
-        return ps.getUpdateCount();
+        int rows = ps.getUpdateCount();
+        Object parameterObject = boundSql.getParameterObject();
+        KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
+        keyGenerator.processAfter(executor, mappedStatement, ps, parameterObject);
+        return rows;
     }
 
     @Override

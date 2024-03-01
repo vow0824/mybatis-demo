@@ -6,6 +6,9 @@ import com.vow.mybatis.annotation.Select;
 import com.vow.mybatis.annotation.Update;
 import com.vow.mybatis.binding.MapperMethod;
 import com.vow.mybatis.builder.MapperBuilderAssistant;
+import com.vow.mybatis.executor.keygen.Jdbc3KeyGenerator;
+import com.vow.mybatis.executor.keygen.KeyGenerator;
+import com.vow.mybatis.executor.keygen.NoKeyGenerator;
 import com.vow.mybatis.mapping.SqlCommandType;
 import com.vow.mybatis.mapping.SqlSource;
 import com.vow.mybatis.scripting.LanguageDriver;
@@ -59,6 +62,8 @@ public class MapperAnnotationBuilder {
         }
     }
 
+
+
     private void parseStatement(Method method) {
         Class<?> parameterTypeClass = getParameterType(method);
         LanguageDriver languageDriver = getLanguageDriver(method);
@@ -67,6 +72,15 @@ public class MapperAnnotationBuilder {
         if (sqlSource != null) {
             final String mappedStatementId = type.getName() + "." + method.getName();
             SqlCommandType sqlCommandType = getSqlCommandType(method);
+
+            KeyGenerator keyGenerator;
+            String keyProperty = "id";
+            if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
+                keyGenerator = configuration.isUseGeneratedKeys() ? new Jdbc3KeyGenerator() : new NoKeyGenerator();
+            } else {
+                keyGenerator = new NoKeyGenerator();
+            }
+
             boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 
             String resultMapId = null;
@@ -82,6 +96,8 @@ public class MapperAnnotationBuilder {
                     parameterTypeClass,
                     resultMapId,
                     getReturnType(method),
+                    keyGenerator,
+                    keyProperty,
                     languageDriver
             );
         }

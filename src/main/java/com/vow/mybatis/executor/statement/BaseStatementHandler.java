@@ -1,6 +1,7 @@
 package com.vow.mybatis.executor.statement;
 
 import com.vow.mybatis.executor.Executor;
+import com.vow.mybatis.executor.keygen.KeyGenerator;
 import com.vow.mybatis.executor.parameter.ParameterHandler;
 import com.vow.mybatis.executor.resultset.ResultSetHandler;
 import com.vow.mybatis.mapping.BoundSql;
@@ -70,4 +71,9 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
 
     protected abstract Statement instantiateStatement(Connection connection) throws SQLException;
+
+    protected void generateKeys(Object parameter) {
+        KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
+        keyGenerator.processBefore(executor, mappedStatement, null, parameter);
+    }
 }
