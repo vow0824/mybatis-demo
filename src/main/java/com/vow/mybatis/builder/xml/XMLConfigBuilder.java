@@ -6,6 +6,7 @@ import com.vow.mybatis.io.Resources;
 import com.vow.mybatis.mapping.Environment;
 import com.vow.mybatis.plugin.Interceptor;
 import com.vow.mybatis.session.Configuration;
+import com.vow.mybatis.session.LocalCacheScope;
 import com.vow.mybatis.transaction.TransactionFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -51,6 +52,8 @@ public class XMLConfigBuilder extends BaseBuilder {
         try {
             // 插件 step-17 添加
             pluginElement(root.element("plugins"));
+            // 设置
+            settingsElement(root.element("settings"));
             // 环境
             environmentsElement(root.element("environments"));
             // 解析映射器
@@ -86,6 +89,25 @@ public class XMLConfigBuilder extends BaseBuilder {
             interceptorInstance.setProperties(properties);
             configuration.addInterceptor(interceptorInstance);
         }
+    }
+
+    /**
+     * <settings>
+     * <!-- 全局缓存：true/false -->
+     * <setting name="cacheEnabled" value="false"/>
+     * <!--缓存级别：SESSION/STATEMENT-->
+     * <setting name="localCacheScope" value="SESSION"/>
+     * </settings>
+     */
+    private void settingsElement(Element context) {
+        if (context == null) return;
+        List<Element> elements = context.elements();
+        Properties props = new Properties();
+        for (Element element : elements) {
+            props.setProperty(element.attributeValue("name"), element.attributeValue("value"));
+        }
+        configuration.setCacheEnabled(booleanValueOf(props.getProperty("cacheEnabled"), true));
+        configuration.setLocalCacheScope(LocalCacheScope.valueOf(props.getProperty("localCacheScope")));
     }
 
     /**

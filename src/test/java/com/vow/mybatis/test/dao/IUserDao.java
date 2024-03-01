@@ -1,8 +1,8 @@
 package com.vow.mybatis.test.dao;
 
-import com.vow.mybatis.annotation.Insert;
-import com.vow.mybatis.annotation.Select;
-import com.vow.mybatis.annotation.Update;
+import com.vow.mybatis.annotations.Insert;
+import com.vow.mybatis.annotations.Select;
+import com.vow.mybatis.annotations.Update;
 import com.vow.mybatis.test.po.User;
 
 import java.util.List;

@@ -1,9 +1,9 @@
 package com.vow.mybatis.builder.annotation;
 
-import com.vow.mybatis.annotation.Delete;
-import com.vow.mybatis.annotation.Insert;
-import com.vow.mybatis.annotation.Select;
-import com.vow.mybatis.annotation.Update;
+import com.vow.mybatis.annotations.Delete;
+import com.vow.mybatis.annotations.Insert;
+import com.vow.mybatis.annotations.Select;
+import com.vow.mybatis.annotations.Update;
 import com.vow.mybatis.binding.MapperMethod;
 import com.vow.mybatis.builder.MapperBuilderAssistant;
 import com.vow.mybatis.executor.keygen.Jdbc3KeyGenerator;
@@ -96,6 +96,8 @@ public class MapperAnnotationBuilder {
                     parameterTypeClass,
                     resultMapId,
                     getReturnType(method),
+                    false,
+                    false,
                     keyGenerator,
                     keyProperty,
                     languageDriver

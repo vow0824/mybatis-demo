@@ -1,4 +1,4 @@
-package com.vow.mybatis.annotation;
+package com.vow.mybatis.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

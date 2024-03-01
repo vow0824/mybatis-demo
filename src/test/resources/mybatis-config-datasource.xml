@@ -4,6 +4,13 @@
 
 <configuration>
 
+    <settings>
+        <!-- 全局缓存：true/false -->
+        <setting name="cacheEnabled" value="true"/>
+        <!--缓存级别：SESSION/STATEMENT-->
+        <setting name="localCacheScope" value="STATEMENT"/>
+    </settings>
+
     <plugins>
         <plugin interceptor="com.vow.mybatis.test.plugin.TestPlugin">
             <property name="test00" value="100"/>
