@@ -1,5 +1,6 @@
 package com.vow.mybatis.executor;
 
+import com.vow.mybatis.cache.CacheKey;
 import com.vow.mybatis.mapping.BoundSql;
 import com.vow.mybatis.mapping.MappedStatement;
 import com.vow.mybatis.session.ResultHandler;
@@ -20,7 +21,7 @@ public interface Executor {
 
     int update(MappedStatement ms, Object parameter) throws SQLException;
 
-    <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException;
+    <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException;
 
     <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException;
 
@@ -31,4 +32,10 @@ public interface Executor {
     void rollback(boolean required) throws SQLException;
 
     void close(boolean forceRollback);
+
+    // 清理Session缓存
+    void clearLocalCache();
+
+    // 创建缓存 Key
+    CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql);
 }

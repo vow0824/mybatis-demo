@@ -41,7 +41,14 @@ public class ApiTest {
         // 3. 测试验证
         Activity req = new Activity();
         req.setActivityId(100001L);
-        Activity res = dao.queryActivityById(req);
-        logger.info("测试结果：{}", JSON.toJSONString(res));
+
+        logger.info("测试结果：{}", JSON.toJSONString(dao.queryActivityById(req)));
+
+        // 测试时，可以分别开启对应的注释，验证功能逻辑
+        // sqlSession.commit();
+        // sqlSession.clearCache();
+        // sqlSession.close();
+
+        logger.info("测试结果：{}", JSON.toJSONString(dao.queryActivityById(req)));
     }
 }
